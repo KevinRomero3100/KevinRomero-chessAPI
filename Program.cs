@@ -6,7 +6,7 @@ using chessAPI.models.player;
 using Microsoft.AspNetCore.Authorization;
 using Serilog;
 using Serilog.Events;
-
+//sddsds
 //Serilog logger (https://github.com/serilog/serilog-aspnetcore)
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
