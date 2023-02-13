@@ -2,6 +2,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using chessAPI;
 using chessAPI.business.interfaces;
+using chessAPI.business.impl;
 using chessAPI.models.player;
 using Microsoft.AspNetCore.Authorization;
 using Serilog;
@@ -45,6 +46,16 @@ try
 
     app.MapPost("player", 
     [AllowAnonymous] async(IPlayerBusiness<int> bs, clsNewPlayer newPlayer) => Results.Ok(await bs.addPlayer(newPlayer)));
+
+    app.MapGet("/players", async (IPlayerBusiness<int> players) =>
+    {
+        return await  players.getPlayers();
+        //return "hola mundo";
+    });
+
+    app.MapPut("/updatePlayer",
+        [AllowAnonymous] async (IPlayerBusiness<int> bs, clsPlayer<int> updatePlayer) => Results.Ok(await bs.updatePlayer(updatePlayer)));
+
 
     app.Run();
 }

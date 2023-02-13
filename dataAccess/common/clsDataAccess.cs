@@ -106,6 +106,32 @@ public abstract class clsDataAccess<TEntity, TKey, TC>
             }
         }
 
+        protected async Task<TResult> update<TResult>(DynamicParameters param)
+        {
+            try
+            {
+                IEnumerable<TResult> result = await rkm.trn.Connection.QueryAsync<TResult>(sql: queries.UpdateWholeEntity,
+                    param: param,
+                    transaction: rkm.trn,
+                    commandType: CommandType.Text).ConfigureAwait(false);
+                return result.FirstOrDefault();
+            }
+            catch (SqlException ex)
+            {
+                logger.LogError("Error al hacer SQL-ADD<TResult> {" + queries.NewDataEntity + "} Error:" + ex.ToString());
+                throw;
+            }
+            catch (TimeoutException ex)
+            {
+                logger.LogError("Error al hacer SQL-ADD<TResult> (TimeOut) {" + queries.NewDataEntity + "} Error:" + ex.ToString());
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error general al hacer SQL-ADD<TResult> {" + queries.NewDataEntity + "} Error:" + ex.ToString());
+                throw;
+            }
+        }
         protected async Task<bool> add(DynamicParameters param)
         {
             try

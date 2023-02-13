@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using chessAPI.dataAccess.common;
 using chessAPI.dataAccess.interfaces;
 using chessAPI.dataAccess.models;
 using chessAPI.models.player;
 using Dapper;
+using static Dapper.SqlMapper;
 
 namespace chessAPI.dataAccess.repositores;
 
@@ -14,6 +16,7 @@ public sealed class clsPlayerRepository<TI, TC> : clsDataAccess<clsPlayerEntityM
                                ISQLData queries,
                                ILogger<clsPlayerRepository<TI, TC>> logger) : base(rkm, queries, logger)
     {
+        
     }
 
     public async Task<TI> addPlayer(clsNewPlayer player)
@@ -21,6 +24,14 @@ public sealed class clsPlayerRepository<TI, TC> : clsDataAccess<clsPlayerEntityM
         var p = new DynamicParameters();
         p.Add("EMAIL", player.email);
         return await add<TI>(p).ConfigureAwait(false);
+    }
+
+    public async Task<TI> updatePlayer(clsPlayer<TI> player)
+    {
+        var p = new DynamicParameters();
+        p.Add("id", player.id);
+        p.Add("email", player.email);
+        return await update<TI>(p).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<clsPlayerEntityModel<TI, TC>>> addPlayers(IEnumerable<clsNewPlayer> players)
@@ -44,10 +55,15 @@ public sealed class clsPlayerRepository<TI, TC> : clsDataAccess<clsPlayerEntityM
         throw new NotImplementedException();
     }
 
-    public Task updatePlayer(clsPlayer<TI> updatedPlayer)
+    public async Task<IEnumerable<clsPlayerEntityModel<TI, TC>>> getPlayers()
     {
-        throw new NotImplementedException();
+        var p = new DynamicParameters();
+        var x = await getALL(p);
+        return x;
+
     }
+
+
 
     protected override DynamicParameters fieldsAsParams(clsPlayerEntityModel<TI, TC> entity)
     {
